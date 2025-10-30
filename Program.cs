@@ -1,6 +1,7 @@
 using NLog.Web;
 using RestaurantAPI;
 using RestaurantAPI.Entities;
+using RestaurantAPI.Middleware;
 using RestaurantAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,7 @@ builder.Services.AddScoped<RestaurantSeeder>();
 //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
+builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
@@ -27,7 +29,7 @@ using (var scope = app.Services.CreateScope())
     var seeder = scope.ServiceProvider.GetRequiredService<RestaurantSeeder>();
     seeder.Seed();
 }
-
+app.UseMiddleware<ErrorHandlingMiddleware>(); // wa¿ne ¿eby to dodaæ przed UseHttpsRedirection - zapewnimy w³aœciwy przep³yw
 app.UseHttpsRedirection();
 
 //app.UseAuthorization();
