@@ -15,6 +15,7 @@ builder.Services.AddScoped<RestaurantSeeder>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddSwaggerGen();
 
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
@@ -31,6 +32,11 @@ using (var scope = app.Services.CreateScope())
 }
 app.UseMiddleware<ErrorHandlingMiddleware>(); // wa¿ne ¿eby to dodaæ przed UseHttpsRedirection - zapewnimy w³aœciwy przep³yw
 app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Restaurant API");
+});
 
 //app.UseAuthorization();
 
