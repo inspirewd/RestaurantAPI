@@ -16,6 +16,13 @@ namespace RestaurantAPI
         {
             if (_dbContext.Database.CanConnect()) // sprawdzenie polaczenia z baza danych
             {
+
+                if (!_dbContext.Roles.Any()) 
+                {
+                    var roles = _mock.GetRoles(); // seeder do zasilenia przykładowych, zamockowanych danych wywoła się przy starcie aplikacji
+                    _dbContext.Roles.AddRange(roles);
+                    _dbContext.SaveChanges();
+                } 
                 if (!_dbContext.Restaurants.Any()) // sprawdzenie czy tabela restaurant jest pusta
                 {
                     var restaurants = _mock.GetRestaurants();

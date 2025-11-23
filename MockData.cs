@@ -98,4 +98,23 @@ public class MockData
             }
         };
     }
+
+    public List<Role> GetRoles()
+    {
+        return new List<Role>
+        {
+            new Role
+            {
+                Name = "User"
+            },
+            new Role
+            {
+                Name = "Manager"
+            },
+            new Role
+            {
+                Name = "Admin"
+            }
+        };
+    }
 }
