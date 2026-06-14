@@ -15,6 +15,7 @@ namespace RestaurantAPI.Models.Validators
                 .Custom((value, context) => // sprawdzamy czy użytkownik już istnieje w bazie danych
                 {
                     var emailInUse = dbContext.Users.Any(u => u.Email == value);
+                    // test
                     if (emailInUse) 
                     {
                         context.AddFailure("Email", "That email is taken");
