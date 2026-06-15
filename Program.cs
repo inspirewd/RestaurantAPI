@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 using RestaurantAPI;
 using RestaurantAPI.Entities;
@@ -8,9 +9,29 @@ using RestaurantAPI.Middleware;
 using RestaurantAPI.Models;
 using RestaurantAPI.Models.Validators;
 using RestaurantAPI.Services;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var authenthicationSettings = new AuthenthicationSettings();
+builder.Configuration.GetSection("Authentication").Bind(authenthicationSettings);
 
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = "Bearer";
+    option.DefaultScheme = "Bearer";
+    option.DefaultChallengeScheme = "Bearer";
+}).AddJwtBearer(cfg => 
+{
+    cfg.RequireHttpsMetadata = false; // nie wymuszamy od klienta korzystania z protoko³u https
+    cfg.SaveToken = true;// dany token powinien zostaæ zapisany po stronie servera
+    cfg.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = authenthicationSettings.JwtIssuer, // wydawca danego tokenu
+        ValidAudience = authenthicationSettings.JwtIssuer, // jakie podmioty mog¹ u¿ywaæ tego tokenu
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenthicationSettings.JwtKey)) // klucz prywatny
+    };
+
+});
 // Add services to the container.
 
 builder.Services.AddControllers().AddFluentValidation();
@@ -48,7 +69,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Restaurant API");
 });
 
-//app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 
