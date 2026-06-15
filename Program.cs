@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 var authenthicationSettings = new AuthenthicationSettings();
 builder.Configuration.GetSection("Authentication").Bind(authenthicationSettings);
 
+builder.Services.AddSingleton(authenthicationSettings); // potrzebne ¿eby wstrzykn¹æ do serwisu AccountService (jako singleton w kontenerze zale¿noœci), który bêdzie generowa³ tokeny JWT 
 builder.Services.AddAuthentication(option =>
 {
     option.DefaultAuthenticateScheme = "Bearer";
