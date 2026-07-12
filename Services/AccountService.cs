@@ -48,7 +48,7 @@ namespace RestaurantAPI.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, $"{user.FirstName } {user.LastName }"),
-                new Claim(ClaimTypes.Role, user.Role.Name),
+                new Claim(ClaimTypes.Role, user.Role.Name), // tutaj w claimsach mamy rolę, którą możemy odczytać w Authorize w kontrolerze, bez tego to nie zadziała
                 new Claim("DateOfBirth", user.DateOfBirth.Value.ToString("yyyy-MM-dd")),
                 new Claim("Nationality", user.Nationality)
             };

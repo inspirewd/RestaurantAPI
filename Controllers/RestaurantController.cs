@@ -36,6 +36,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")] // autoryzacja tylko dla ról Admin i Manager, autoryzacja na poziomie enpointa jest ważniejsza niż ta na całym kontrolerze u góry
         public ActionResult CreateRestaurant([FromBody] CreateRestaurantDto dto)
         {
             var id = _restaurantService.Create(dto);
