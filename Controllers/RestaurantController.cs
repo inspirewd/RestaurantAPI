@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Entities;
@@ -9,6 +10,7 @@ namespace RestaurantAPI.Controllers
 {
     [Route("api/restaurant")]
     [ApiController]
+    [Authorize] // w ten sposób włączamy autoryzację na całym kontrolerze, bez tego w ogóle ona nie działa - można też dodać tylko dla poszczególnych enpointów
     public class RestaurantController : ControllerBase
     {
         private readonly IRestaurantService _restaurantService;
@@ -19,12 +21,14 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
+       
         public ActionResult<IEnumerable<RestaurantDto>> GetAll() 
         {
             return Ok(_restaurantService.GetAll());
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous] // w ten sposób wyłączamy autoryzację dla tego endpointu, mimo że jest włączona na całym kontrolerze
         public ActionResult<RestaurantDto> Get([FromRoute]int id)
         {
             var restaurant = _restaurantService.GetById(id);
