@@ -21,7 +21,8 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "HasNationality")]  // dodanie customowej autoryzacji, nazwa musi się pokrywać z tą, którą zdefiniowaliśmy w Program.cs w AddAuthorization
+        //[Authorize(Policy = "HasNationality")]  // dodanie customowej autoryzacji, nazwa musi się pokrywać z tą, którą zdefiniowaliśmy w Program.cs w AddAuthorization
+        [Authorize(Policy = "Atleast20")] // dodajemy customową politykę do sprawdzania wieku
         public ActionResult<IEnumerable<RestaurantDto>> GetAll() 
         {
             return Ok(_restaurantService.GetAll());

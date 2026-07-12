@@ -1,9 +1,11 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 using RestaurantAPI;
+using RestaurantAPI.Authorization;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Middleware;
 using RestaurantAPI.Models;
@@ -23,6 +25,10 @@ builder.Services.AddAuthorization(options =>
 
     // PRZYK£AD POLITYKI AUTORYZACJI, KTÓRA WYMAGA KONKRETNEJ WARTOŒCI CLAIMU - NP. WPUSZCZAMY TYLKO POLAKÓW :D
     // options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "Polish"));
+
+    options.AddPolicy("AtLeast20", builder => builder.AddRequirements(new MinimumAgeRequirement(20)));
+    // customowa polityka autoryzacji, która wymaga spe³nienia customowego wymagania MinimumAgeRequirement
+    // definiujemy tutaj minimalny wiek, który musi spe³niaæ u¿ytkownik, aby uzyskaæ dostêp do endpointu, który bêdzie wymaga³ tej polityki
 });
 
 builder.Services.AddSingleton(authenthicationSettings); // potrzebne ¿eby wstrzykn¹æ do serwisu AccountService (jako singleton w kontenerze zale¿noœci), który bêdzie generowa³ tokeny JWT 
@@ -57,6 +63,7 @@ builder.Services.AddScoped<RequestTimeMiddleware>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>(); // rejestracja customowego handlera autoryzacji, który bêdzie sprawdza³ czy u¿ytkownik spe³nia wymagania customowej polityki autoryzacji AtLeast20
 
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
