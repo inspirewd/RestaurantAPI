@@ -15,6 +15,16 @@ var builder = WebApplication.CreateBuilder(args);
 var authenthicationSettings = new AuthenthicationSettings();
 builder.Configuration.GetSection("Authentication").Bind(authenthicationSettings);
 
+builder.Services.AddAuthorization(options =>
+{
+    // dodajemy w³asn¹ politykê autoryzacji, która bêdzie wymaga³a posiadania claimu "Nationality" w token
+    // dla tej polityki musi istnieæ claim Nationality aby spe³niæ wymagania - wystarczy, ¿e istnieje w tokenie, nie musi mieæ konkretnej wartoœci
+    options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality")); // dowolna narowodoœæ
+
+    // PRZYK£AD POLITYKI AUTORYZACJI, KTÓRA WYMAGA KONKRETNEJ WARTOŒCI CLAIMU - NP. WPUSZCZAMY TYLKO POLAKÓW :D
+    // options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "Polish"));
+});
+
 builder.Services.AddSingleton(authenthicationSettings); // potrzebne ¿eby wstrzykn¹æ do serwisu AccountService (jako singleton w kontenerze zale¿noœci), który bêdzie generowa³ tokeny JWT 
 builder.Services.AddAuthentication(option =>
 {

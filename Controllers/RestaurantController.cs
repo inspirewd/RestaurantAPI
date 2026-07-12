@@ -21,7 +21,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
-       
+        [Authorize(Policy = "HasNationality")]  // dodanie customowej autoryzacji, nazwa musi się pokrywać z tą, którą zdefiniowaliśmy w Program.cs w AddAuthorization
         public ActionResult<IEnumerable<RestaurantDto>> GetAll() 
         {
             return Ok(_restaurantService.GetAll());
