@@ -64,6 +64,7 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>(); // rejestracja customowego handlera autoryzacji, który bêdzie sprawdza³ czy u¿ytkownik spe³nia wymagania customowej polityki autoryzacji AtLeast20
+builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
 
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
